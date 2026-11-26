@@ -1,0 +1,11 @@
+{%- comment -%}
+  Price row: current price, compare-at price and "SAVE x%" badge.
+  Compare-at price is Shopify's native variant field; the saving is calculated, not stored.
+  Accepts: variant
+{%- endcomment -%}
+<span class="lh-price__current">{% render 'lh-money', amount: variant.price %}</span>
+{%- if variant.compare_at_price > variant.price -%}
+  {%- assign saving = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round -%}
+  <s class="lh-price__compare"><span class="lh-visually-hidden">Regular price</span>{% render 'lh-money', amount: variant.compare_at_price %}</s>
+  <span class="lh-price__save">SAVE {{ saving }}%</span>
+{%- endif -%}

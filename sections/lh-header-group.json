@@ -1,0 +1,42 @@
+{
+  "type": "header",
+  "name": "Loomhaus header",
+  "sections": {
+    "announcement": {
+      "type": "lh-announcement-bar",
+      "blocks": {
+        "msg_1": {
+          "type": "message",
+          "settings": {
+            "text": "Free shipping on orders over ₹999",
+            "show_on_mobile": true
+          }
+        },
+        "msg_2": {
+          "type": "message",
+          "settings": {
+            "text": "Use code LOOM10 for 10% off your first order",
+            "show_on_mobile": false
+          }
+        }
+      },
+      "block_order": [
+        "msg_1",
+        "msg_2"
+      ],
+      "settings": {}
+    },
+    "header": {
+      "type": "lh-header",
+      "settings": {
+        "logo_text": "Loomhaus",
+        "tagline": "Clothes made to be worn for years, not seasons.",
+        "button_label": "SHOP THE DROP"
+      }
+    }
+  },
+  "order": [
+    "announcement",
+    "header"
+  ]
+}

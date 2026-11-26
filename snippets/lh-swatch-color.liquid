@@ -1,0 +1,27 @@
+{%- comment -%}
+  Outputs a CSS colour for a colour option value.
+  Priority:
+    1. Shopify's native option-value swatch (value.swatch.color), when the option is linked to the
+       standard "Color" category metafield.
+    2. The shop-level "color_swatch" metaobject whose handle matches the value (e.g. "black").
+       Fields: label (single line text), color (color).
+    3. The value name itself as a CSS colour keyword.
+  Accepts: value (product_option_value or string)
+{%- endcomment -%}
+{%- liquid
+  assign swatch_color = blank
+  if value.swatch.color
+    assign swatch_color = value.swatch.color
+  endif
+  if swatch_color == blank
+    assign swatch_handle = value | handleize
+    assign swatch_entry = shop.metaobjects.color_swatch[swatch_handle]
+    if swatch_entry.color.value
+      assign swatch_color = swatch_entry.color.value
+    endif
+  endif
+  if swatch_color == blank
+    assign swatch_color = value | downcase
+  endif
+  echo swatch_color
+-%}

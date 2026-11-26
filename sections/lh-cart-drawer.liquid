@@ -1,0 +1,139 @@
+{%- comment -%}
+  Cart drawer. Rendered in layout/loomhaus.liquid and refreshed by loomhaus.js through the
+  Section Rendering API (sections=lh-cart-drawer) after every cart change.
+
+  Auto-add rule (configurable below): when the cart holds any item whose options include ALL of
+  the trigger values (default "Black" + "M"), the gift product's matching variant is added once
+  and flagged with the private line property "_auto_added". Its quantity is locked. It is
+  removed again when no trigger item is left.
+{%- endcomment -%}
+{%- liquid
+  assign gift_product = section.settings.gift_product
+  assign trigger_values = section.settings.trigger_values | split: ','
+  assign gift_variant = nil
+  if gift_product != blank
+    for v in gift_product.variants
+      assign matches = 0
+      for t in trigger_values
+        assign t_clean = t | strip
+        if v.options contains t_clean
+          assign matches = matches | plus: 1
+        endif
+      endfor
+      if matches == trigger_values.size and v.available
+        assign gift_variant = v
+        break
+      endif
+    endfor
+    if gift_variant == nil
+      assign gift_variant = gift_product.selected_or_first_available_variant
+    endif
+  endif
+-%}
+<lh-cart-drawer
+  class="lh-drawer"
+  id="LhCartDrawer"
+  data-gift-variant="{{ gift_variant.id }}"
+  data-trigger-values="{{ section.settings.trigger_values | escape }}"
+  hidden
+>
+  <div class="lh-modal__overlay" data-lh-close></div>
+  <div class="lh-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="LhCartTitle" tabindex="-1">
+    <div class="lh-drawer__header">
+      <h2 class="lh-drawer__title" id="LhCartTitle">Your cart ({{ cart.item_count }})</h2>
+      <button type="button" class="lh-icon-btn" data-lh-close aria-label="Close cart">
+        {% render 'lh-icon', icon: 'close' %}
+      </button>
+    </div>
+
+    <div class="lh-drawer__body" data-lh-cart-body data-item-count="{{ cart.item_count }}">
+      {%- if cart.item_count == 0 -%}
+        <div class="lh-drawer__empty">
+          <p>Your cart is empty.</p>
+          <a class="lh-btn lh-btn--primary" href="#lh-shop-the-look" data-lh-close>
+            <span>SHOP NOW</span>{% render 'lh-icon', icon: 'arrow-right' %}
+          </a>
+        </div>
+      {%- else -%}
+        <ul class="lh-lines" role="list">
+          {%- for item in cart.items -%}
+            {%- assign auto_added = false -%}
+            {%- if item.properties['_auto_added'] == 'true' -%}{%- assign auto_added = true -%}{%- endif -%}
+            <li
+              class="lh-line{% if auto_added %} lh-line--auto{% endif %}"
+              data-line-key="{{ item.key }}"
+              data-variant-id="{{ item.variant_id }}"
+              data-options="{{ item.variant.options | join: '|' | escape }}"
+              {% if auto_added %}data-auto-added{% endif %}
+            >
+              <a class="lh-line__image" href="{{ item.url }}" tabindex="-1">
+                {%- if item.image -%}
+                  {{ item.image | image_url: width: 160, height: 192, crop: 'center' | image_tag: alt: item.product.title, loading: 'lazy' }}
+                {%- endif -%}
+              </a>
+              <div class="lh-line__info">
+                {%- if auto_added -%}
+                  <span class="lh-tag">{{ section.settings.auto_tag | escape }}</span>
+                {%- endif -%}
+                <a class="lh-line__title" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+                {%- unless item.product.has_only_default_variant -%}
+                  <p class="lh-line__variant">{{ item.variant.title | escape }}</p>
+                {%- endunless -%}
+                <div class="lh-line__actions">
+                  <div class="lh-line-qty">
+                    <button
+                      type="button"
+                      data-lh-line-change="{{ item.quantity | minus: 1 }}"
+                      aria-label="Decrease quantity of {{ item.product.title | escape }}"
+                      {% if auto_added %}disabled{% endif %}
+                    >−</button>
+                    <span>{{ item.quantity }}</span>
+                    <button
+                      type="button"
+                      data-lh-line-change="{{ item.quantity | plus: 1 }}"
+                      aria-label="Increase quantity of {{ item.product.title | escape }}"
+                      {% if auto_added %}disabled{% endif %}
+                    >+</button>
+                  </div>
+                  <button type="button" class="lh-line__remove" data-lh-line-change="0">Remove</button>
+                </div>
+              </div>
+              <p class="lh-line__price">{% render 'lh-money', amount: item.final_line_price %}</p>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    {%- if cart.item_count > 0 -%}
+      <div class="lh-drawer__footer">
+        <div class="lh-drawer__subtotal">
+          <span>Subtotal</span>
+          <span class="lh-drawer__subtotal-value">{% render 'lh-money', amount: cart.total_price %}</span>
+        </div>
+        {%- if section.settings.footer_note != blank -%}
+          <p class="lh-drawer__note">{{ section.settings.footer_note | escape }}</p>
+        {%- endif -%}
+        <form action="{{ routes.cart_url }}" method="post">
+          <button type="submit" name="checkout" class="lh-btn lh-btn--primary lh-btn--square lh-btn--block">
+            <span>CHECKOUT</span>{% render 'lh-icon', icon: 'arrow-right' %}
+          </button>
+        </form>
+      </div>
+    {%- endif -%}
+  </div>
+</lh-cart-drawer>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "class": "lh-section--cart-drawer",
+  "settings": [
+    { "type": "text", "id": "footer_note", "label": "Footer note", "default": "Taxes included. Shipping calculated at checkout." },
+    { "type": "header", "content": "Auto-added product" },
+    { "type": "product", "id": "gift_product", "label": "Product to auto-add" },
+    { "type": "text", "id": "trigger_values", "label": "Trigger option values", "info": "Comma separated. An item with all of these option values adds the product above.", "default": "Black, M" },
+    { "type": "text", "id": "auto_tag", "label": "Tag label", "default": "AUTO-ADDED" }
+  ]
+}
+{% endschema %}

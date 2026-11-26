@@ -1,0 +1,55 @@
+<footer class="lh-footer" {{ section.shopify_attributes }}>
+  <div class="lh-footer__brand">
+    <a class="lh-footer__logo" href="{{ routes.root_url }}">{{ section.settings.logo_text | escape }}</a>
+    {%- if section.settings.tagline != blank -%}
+      <p class="lh-footer__tagline">{{ section.settings.tagline | escape }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="lh-footer__menus">
+    {%- for block in section.blocks -%}
+      <nav class="lh-footer__menu" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
+        <h2 class="lh-footer__heading">{{ block.settings.heading | escape }}</h2>
+        <ul role="list">
+          {%- if block.settings.menu != blank -%}
+            {%- for link in block.settings.menu.links -%}
+              <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+            {%- endfor -%}
+          {%- else -%}
+            {%- assign labels = block.settings.links | newline_to_br | split: '<br />' -%}
+            {%- for label in labels -%}
+              {%- assign label = label | strip -%}
+              {%- if label != blank -%}
+                <li><a href="{{ routes.all_products_collection_url }}">{{ label | escape }}</a></li>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+        </ul>
+      </nav>
+    {%- endfor -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "lh-section lh-section--footer",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "logo_text", "label": "Logo text", "default": "Loomhaus" },
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Clothes made to be worn for years, not seasons." }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "SHOP" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "info": "When empty, the labels below are shown instead." },
+        { "type": "textarea", "id": "links", "label": "Fallback labels (one per line)" }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

@@ -1,0 +1,36 @@
+{
+  "type": "footer",
+  "name": "Loomhaus footer",
+  "sections": {
+    "footer": {
+      "type": "lh-footer",
+      "blocks": {
+        "shop": {
+          "type": "menu",
+          "settings": {
+            "heading": "SHOP",
+            "links": "Women\nMen\nNew arrivals\nBestsellers"
+          }
+        },
+        "help": {
+          "type": "menu",
+          "settings": {
+            "heading": "HELP",
+            "links": "Shipping\nReturns\nSize guide\nContact us"
+          }
+        }
+      },
+      "block_order": [
+        "shop",
+        "help"
+      ],
+      "settings": {
+        "logo_text": "Loomhaus",
+        "tagline": "Clothes made to be worn for years, not seasons."
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

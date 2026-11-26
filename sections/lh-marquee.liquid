@@ -1,0 +1,38 @@
+{%- capture items -%}
+  {%- for block in section.blocks -%}
+    <span class="lh-marquee__item" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</span>
+    <span class="lh-marquee__sep" aria-hidden="true">✦</span>
+  {%- endfor -%}
+{%- endcapture -%}
+<div class="lh-marquee" style="--lh-marquee-duration: {{ section.settings.speed }}s;" {{ section.shopify_attributes }}>
+  <div class="lh-marquee__track">
+    <div class="lh-marquee__group">{{ items }}</div>
+    <div class="lh-marquee__group" aria-hidden="true">{{ items }}</div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Loomhaus marquee",
+  "class": "lh-section lh-section--marquee",
+  "max_blocks": 10,
+  "settings": [
+    { "type": "range", "id": "speed", "label": "Loop duration", "min": 10, "max": 60, "step": 2, "unit": "s", "default": 30 }
+  ],
+  "blocks": [
+    { "type": "item", "name": "Item", "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Organic cotton" }] }
+  ],
+  "presets": [
+    {
+      "name": "Loomhaus marquee",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Organic cotton" } },
+        { "type": "item", "settings": { "text": "Made to last" } },
+        { "type": "item", "settings": { "text": "Sizes XS to L" } },
+        { "type": "item", "settings": { "text": "Free returns" } },
+        { "type": "item", "settings": { "text": "Ethically made" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

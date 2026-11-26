@@ -1,0 +1,10 @@
+{%- comment -%}
+  Price formatting from the Figma file: "₹389.55". The store's own money format is
+  "Rs. {{amount}}", so INR prices are rendered with the ₹ symbol; other currencies
+  keep the store format. Accepts: amount (in cents)
+{%- endcomment -%}
+{%- if cart.currency.iso_code == 'INR' -%}
+  ₹{{ amount | money_without_currency }}
+{%- else -%}
+  {{ amount | money }}
+{%- endif -%}

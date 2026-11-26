@@ -1,0 +1,16 @@
+{%- comment -%} Formats an integer with thousands separators: 1240 -> 1,240. Accepts: number {%- endcomment -%}
+{%- liquid
+  assign digits = number | round | append: ''
+  assign size = digits.size
+  assign out = ''
+  for i in (1..size)
+    assign idx = size | minus: i
+    assign ch = digits | slice: idx
+    assign out = ch | append: out
+    assign pos = i | modulo: 3
+    if pos == 0 and i < size
+      assign out = ',' | append: out
+    endif
+  endfor
+  echo out
+-%}

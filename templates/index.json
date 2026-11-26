@@ -1,0 +1,179 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "layout": "loomhaus",
+  "sections": {
+    "hero": {
+      "type": "lh-hero",
+      "blocks": {
+        "stat_1": {
+          "type": "stat",
+          "settings": {
+            "value": "4.8★",
+            "label": "2,000+ reviews"
+          }
+        },
+        "stat_2": {
+          "type": "stat",
+          "settings": {
+            "value": "100%",
+            "label": "organic cotton"
+          }
+        },
+        "stat_3": {
+          "type": "stat",
+          "settings": {
+            "value": "30 days",
+            "label": "free returns"
+          }
+        }
+      },
+      "block_order": [
+        "stat_1",
+        "stat_2",
+        "stat_3"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/Hero_lifestyle_photo.png",
+        "badge": "NEW SEASON · AUTUMN / WINTER",
+        "title": "The Winter Edit",
+        "text": "Warm layers, honest fabrics and fits that work every day. Discover the pieces our community wears on repeat this season.",
+        "button_label": "SHOP NOW",
+        "button_link": "",
+        "card_product": "yellow-wool-jumper",
+        "card_subtitle": "Bestseller this week"
+      }
+    },
+    "marquee": {
+      "type": "lh-marquee",
+      "blocks": {
+        "m1": {
+          "type": "item",
+          "settings": {
+            "text": "Organic cotton"
+          }
+        },
+        "m2": {
+          "type": "item",
+          "settings": {
+            "text": "Made to last"
+          }
+        },
+        "m3": {
+          "type": "item",
+          "settings": {
+            "text": "Sizes XS to L"
+          }
+        },
+        "m4": {
+          "type": "item",
+          "settings": {
+            "text": "Free returns"
+          }
+        },
+        "m5": {
+          "type": "item",
+          "settings": {
+            "text": "Ethically made"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "m4",
+        "m5"
+      ],
+      "settings": {
+        "speed": 30
+      }
+    },
+    "look": {
+      "type": "lh-shop-the-look",
+      "blocks": {
+        "l1": {
+          "type": "look",
+          "settings": {
+            "product": "ocean-blue-shirt",
+            "hotspot_x": 52,
+            "hotspot_y": 30
+          }
+        },
+        "l2": {
+          "type": "look",
+          "settings": {
+            "product": "olive-green-jacket",
+            "hotspot_x": 56,
+            "hotspot_y": 42
+          }
+        },
+        "l3": {
+          "type": "look",
+          "settings": {
+            "product": "navy-sport-jacket",
+            "hotspot_x": 43,
+            "hotspot_y": 36
+          }
+        },
+        "l4": {
+          "type": "look",
+          "settings": {
+            "product": "striped-silk-blouse",
+            "hotspot_x": 52,
+            "hotspot_y": 30
+          }
+        },
+        "l5": {
+          "type": "look",
+          "settings": {
+            "product": "led-high-tops",
+            "hotspot_x": 44,
+            "hotspot_y": 55
+          }
+        },
+        "l6": {
+          "type": "look",
+          "settings": {
+            "product": "striped-skirt-and-top",
+            "hotspot_x": 52,
+            "hotspot_y": 68
+          }
+        }
+      },
+      "block_order": [
+        "l1",
+        "l2",
+        "l3",
+        "l4",
+        "l5",
+        "l6"
+      ],
+      "settings": {
+        "eyebrow": "SHOP THE LOOK",
+        "title": "Loomhaus in the wild",
+        "subtitle": "Tap the + on any look to shop it."
+      }
+    },
+    "featured": {
+      "type": "lh-featured-product",
+      "settings": {
+        "product": "classic-varsity-top",
+        "price_note": "MRP inclusive of all taxes"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "marquee",
+    "look",
+    "featured"
+  ]
+}

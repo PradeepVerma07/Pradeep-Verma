@@ -1,0 +1,87 @@
+<section class="lh-look" id="lh-shop-the-look" {{ section.shopify_attributes }}>
+  <div class="lh-look__head">
+    <div class="lh-look__titles">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="lh-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h2 class="lh-look__title">{{ section.settings.title | escape }}</h2>
+    </div>
+    {%- if section.settings.subtitle != blank -%}
+      <p class="lh-look__subtitle lh-hide-mobile">{{ section.settings.subtitle | escape }}</p>
+    {%- endif -%}
+  </div>
+
+  <ul class="lh-look__grid" role="list">
+    {%- for block in section.blocks -%}
+      {%- assign product = block.settings.product -%}
+      <li class="lh-look__tile" {{ block.shopify_attributes }}>
+        {%- if product != blank -%}
+          {%- assign image = product.featured_image -%}
+          {%- if image -%}
+            {{
+              image
+              | image_url: width: 1200
+              | image_tag:
+                class: 'lh-look__image',
+                widths: '180, 360, 400, 540, 800, 1200',
+                sizes: '(min-width: 750px) calc((100vw - 240px) / 3), calc((100vw - 48px) / 2)',
+                loading: 'lazy',
+                alt: image.alt | default: product.title
+            }}
+          {%- endif -%}
+
+          <button
+            type="button"
+            class="lh-hotspot"
+            style="--x: {{ block.settings.hotspot_x }}%; --y: {{ block.settings.hotspot_y }}%;"
+            data-lh-quick-view="{{ product.url }}"
+            aria-label="Quick view {{ product.title | escape }}"
+            aria-haspopup="dialog"
+          >
+            {% render 'lh-icon', icon: 'plus' %}
+          </button>
+
+          <p class="lh-look__label">
+            <span class="lh-look__label-title">{{ product.title | escape }}</span>
+            <span class="lh-look__label-price">{% render 'lh-money', amount: product.selected_or_first_available_variant.price %}</span>
+          </p>
+        {%- else -%}
+          {{ 'product-apparel-1' | placeholder_svg_tag: 'lh-look__image lh-placeholder' }}
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</section>
+
+{% schema %}
+{
+  "name": "Shop the look",
+  "class": "lh-section lh-section--look",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "SHOP THE LOOK" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "Loomhaus in the wild" },
+    { "type": "text", "id": "subtitle", "label": "Subheading", "default": "Tap the + on any look to shop it." }
+  ],
+  "blocks": [
+    {
+      "type": "look",
+      "name": "Look",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "range", "id": "hotspot_x", "label": "Hotspot horizontal position", "min": 5, "max": 95, "step": 1, "unit": "%", "default": 52 },
+        { "type": "range", "id": "hotspot_y", "label": "Hotspot vertical position", "min": 5, "max": 85, "step": 1, "unit": "%", "default": 30 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop the look",
+      "blocks": [
+        { "type": "look" }, { "type": "look" }, { "type": "look" },
+        { "type": "look" }, { "type": "look" }, { "type": "look" }
+      ]
+    }
+  ]
+}
+{% endschema %}

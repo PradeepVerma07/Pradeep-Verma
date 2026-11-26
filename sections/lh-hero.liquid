@@ -1,0 +1,113 @@
+{%- liquid
+  assign card_product = section.settings.card_product
+  assign hero_image = section.settings.image
+  if hero_image == blank and card_product != blank
+    assign hero_image = card_product.featured_image
+  endif
+-%}
+<section class="lh-hero" {{ section.shopify_attributes }}>
+  <div class="lh-hero__content">
+    {%- if section.settings.badge != blank -%}
+      <span class="lh-pill-badge lh-hero__badge">{{ section.settings.badge | escape | replace: '·', '&nbsp;·&nbsp;' }}</span>
+    {%- endif -%}
+
+    <h1 class="lh-hero__title">{{ section.settings.title | escape }}</h1>
+
+    {%- if section.settings.text != blank -%}
+      <p class="lh-hero__text">{{ section.settings.text | escape }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="lh-hero__buttons">
+        <a class="lh-btn lh-btn--primary lh-hero__button" href="{{ section.settings.button_link | default: '#lh-shop-the-look' }}">
+          <span>{{ section.settings.button_label | escape }}</span>
+          {% render 'lh-icon', icon: 'arrow-right' %}
+        </a>
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="lh-hero__stats" role="list">
+        {%- for block in section.blocks -%}
+          <li class="lh-hero__stat" {{ block.shopify_attributes }}>
+            <span class="lh-hero__stat-value">{{ block.settings.value | escape }}</span>
+            <span class="lh-hero__stat-label">{{ block.settings.label | escape }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+
+  <div class="lh-hero__visual">
+    <span class="lh-hero__circle" aria-hidden="true"></span>
+    <div class="lh-hero__image">
+      {%- if hero_image != blank -%}
+        {{
+          hero_image
+          | image_url: width: 1320
+          | image_tag:
+            widths: '300, 440, 600, 880, 1320',
+            sizes: '(min-width: 750px) 440px, 300px',
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: hero_image.alt
+        }}
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'lh-placeholder' }}
+      {%- endif -%}
+    </div>
+
+    {%- if card_product != blank -%}
+      <a class="lh-hero__card lh-hide-mobile" href="{{ card_product.url }}">
+        <span class="lh-hero__card-image">
+          {%- if card_product.featured_image -%}
+            {{ card_product.featured_image | image_url: width: 72, height: 72, crop: 'center' | image_tag: alt: '', loading: 'lazy' }}
+          {%- endif -%}
+        </span>
+        <span class="lh-hero__card-text">
+          <span class="lh-hero__card-title">{{ card_product.title | escape }}</span>
+          <span class="lh-hero__card-sub">{{ section.settings.card_subtitle | escape }}</span>
+        </span>
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Loomhaus hero",
+  "class": "lh-section lh-section--hero",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Hero image", "info": "Falls back to the floating card product's image." },
+    { "type": "text", "id": "badge", "label": "Badge", "default": "NEW SEASON · AUTUMN / WINTER" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "The Winter Edit" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Warm layers, honest fabrics and fits that work every day. Discover the pieces our community wears on repeat this season." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "SHOP NOW" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "header", "content": "Floating card" },
+    { "type": "product", "id": "card_product", "label": "Product" },
+    { "type": "text", "id": "card_subtitle", "label": "Subtitle", "default": "Bestseller this week" }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "4.8★" },
+        { "type": "text", "id": "label", "label": "Label", "default": "2,000+ reviews" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Loomhaus hero",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "4.8★", "label": "2,000+ reviews" } },
+        { "type": "stat", "settings": { "value": "100%", "label": "organic cotton" } },
+        { "type": "stat", "settings": { "value": "30 days", "label": "free returns" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,125 @@
+{%- comment -%}
+  Quick view body. Not placed in any template: loomhaus.js fetches it through the
+  Section Rendering API, e.g. /products/navy-sports-jacket?section_id=lh-quick-view
+{%- endcomment -%}
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign color_index = nil
+  assign size_index = nil
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name == 'color' or option_name == 'colour'
+      assign color_index = forloop.index0
+      assign color_option = option
+    elsif option_name == 'size'
+      assign size_index = forloop.index0
+      assign size_option = option
+    endif
+  endfor
+  assign image = variant.featured_media | default: product.featured_media
+-%}
+<lh-product-form
+  class="lh-qv"
+  data-section="quick-view"
+  data-color-index="{{ color_index }}"
+  data-size-index="{{ size_index }}"
+  data-require-size="true"
+>
+  {% render 'lh-product-json', product: product %}
+
+  <span class="lh-qv__handle lh-show-mobile" aria-hidden="true"></span>
+
+  <div class="lh-qv__image" data-lh-qv-image>
+    {%- for media in product.media -%}
+      {%- if media.media_type == 'image' -%}
+        <div class="lh-qv__image-item" data-media-id="{{ media.id }}"{% unless media.id == image.id %} hidden{% endunless %}>
+          {{
+            media
+            | image_url: width: 760
+            | image_tag:
+              widths: '240, 354, 480, 760',
+              sizes: '(min-width: 750px) 240px, calc(100vw - 40px)',
+              alt: media.alt | default: product.title
+          }}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="lh-qv__details">
+    <div class="lh-qv__title-row">
+      <div class="lh-qv__title-price">
+        <h2 class="lh-qv__title" id="LhQuickViewTitle">{{ product.title | escape }}</h2>
+        <p class="lh-qv__price" data-lh-qv-price>{% render 'lh-money', amount: variant.price %}</p>
+      </div>
+      <button type="button" class="lh-icon-btn lh-qv__close" data-lh-close aria-label="Close quick view">
+        {% render 'lh-icon', icon: 'close' %}
+      </button>
+    </div>
+
+    {%- if product.description != blank -%}
+      <p class="lh-qv__desc">{{ product.description | strip_html | strip | truncatewords: 40 }}</p>
+    {%- endif -%}
+
+    {%- if color_option -%}
+      <fieldset class="lh-option">
+        <legend class="lh-option__label">{{ color_option.name | upcase }}</legend>
+        <div class="lh-color-options">
+          {%- for value in color_option.values -%}
+            <label class="lh-color-option">
+              <input
+                type="radio"
+                class="lh-visually-hidden"
+                name="qv-color"
+                value="{{ value | escape }}"
+                data-lh-option="{{ color_index }}"
+                {% if value == color_option.selected_value %}checked{% endif %}
+              >
+              <span class="lh-color-option__box">
+                <span class="lh-color-option__dot" style="--swatch: {% render 'lh-swatch-color', value: value %};"></span>
+                <span>{{ value | escape }}</span>
+              </span>
+            </label>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endif -%}
+
+    {%- if size_option -%}
+      <div class="lh-option">
+        <label class="lh-option__label" for="LhQvSize">{{ size_option.name | upcase }}</label>
+        <div class="lh-select">
+          <select id="LhQvSize" data-lh-option="{{ size_index }}" data-lh-size-select>
+            <option value="" selected disabled>Choose your {{ size_option.name | downcase }}</option>
+            {%- for value in size_option.values -%}
+              <option value="{{ value | escape }}">{{ value | escape }}</option>
+            {%- endfor -%}
+          </select>
+          {% render 'lh-icon', icon: 'chevron-down' %}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <form class="lh-qv__form" action="{{ routes.cart_add_url }}" method="post" data-lh-add-form>
+      <input type="hidden" name="id" value="{{ variant.id }}" data-lh-variant-id>
+      <input type="hidden" name="quantity" value="1">
+      <button
+        type="submit"
+        class="lh-btn lh-btn--primary lh-btn--square lh-btn--block"
+        data-lh-add-button
+        {% if size_option %}disabled{% endif %}
+      >
+        <span data-lh-add-label>ADD TO CART</span>
+        {% render 'lh-icon', icon: 'arrow-right' %}
+      </button>
+      <p class="lh-form-error" data-lh-error role="alert" hidden></p>
+    </form>
+  </div>
+</lh-product-form>
+
+{% schema %}
+{
+  "name": "Quick view",
+  "class": "lh-section--quick-view"
+}
+{% endschema %}

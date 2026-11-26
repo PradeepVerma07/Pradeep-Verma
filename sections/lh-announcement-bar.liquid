@@ -1,0 +1,30 @@
+<div class="lh-announcement" {{ section.shopify_attributes }}>
+  {%- for block in section.blocks -%}
+    {%- unless forloop.first -%}
+      <span class="lh-announcement__sep lh-hide-mobile" aria-hidden="true">✦</span>
+    {%- endunless -%}
+    <p class="lh-announcement__text{% unless block.settings.show_on_mobile %} lh-hide-mobile{% endunless %}" {{ block.shopify_attributes }}>
+      {{- block.settings.text -}}
+    </p>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "class": "lh-section lh-section--announcement",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Free shipping on orders over ₹999" },
+        { "type": "checkbox", "id": "show_on_mobile", "label": "Show on mobile", "default": true }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Loomhaus announcement bar" }],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}
