@@ -10,7 +10,7 @@
   'use strict';
 
   const config = window.Loomhaus || { routes: {}, moneyFormat: '{{amount}}' };
-  // Figma shows INR as "₹389.55"; the store format is "Rs. {{amount}}" (see snippets/lh-money.liquid).
+  //  {{amount}}" (see snippets/lh-money.liquid).
   if (config.currency === 'INR') config.moneyFormat = '\u20B9{{amount}}';
   const routes = Object.assign(
     { root: '/', cartAdd: '/cart/add.js', cartChange: '/cart/change.js', cart: '/cart.js' },
@@ -20,7 +20,6 @@
   const GIFT_DECLINED_KEY = 'lh-gift-declined';
   const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea, [tabindex]:not([tabindex="-1"])';
 
-  /* ------------------------------------------------------------------ utils */
 
   const formatMoney = (cents, format = config.moneyFormat) => {
     const value = Number(cents) / 100;
@@ -59,12 +58,12 @@
     return data;
   };
 
-  /** Focus trap + scroll lock shared by the drawer and the quick view. */
+  /** Focus trap + scroll lock  */
   const overlay = {
     stack: [],
     open(el, panel, opener) {
       el.hidden = false;
-      // Force a frame so the CSS transition runs.
+ 
       requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('is-open')));
       document.body.classList.add('lh-scroll-locked');
       const entry = { el, panel, opener: opener || document.activeElement };
@@ -100,7 +99,7 @@
     },
   };
 
-  /* ------------------------------------------------------------------ cart */
+  /* cart */
 
   const cart = {
     busy: false,
@@ -189,7 +188,7 @@
     },
   };
 
-  /* ------------------------------------------------------------------ drawer */
+  /*  drawer */
 
   class LhCartDrawer extends HTMLElement {
     connectedCallback() {
@@ -240,7 +239,7 @@
     }
   }
 
-  /* ------------------------------------------------------------------ quick view */
+  /* quick view */
 
   class LhQuickView extends HTMLElement {
     connectedCallback() {
@@ -306,7 +305,7 @@
     close() { overlay.close(this); }
   }
 
-  /* ------------------------------------------------------------------ quantity */
+  /* quantity */
 
   class LhQuantity extends HTMLElement {
     connectedCallback() {
@@ -331,7 +330,7 @@
     }
   }
 
-  /* ------------------------------------------------------------------ product form */
+  /* Product form */
 
   class LhProductForm extends HTMLElement {
     connectedCallback() {
